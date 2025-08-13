@@ -1,0 +1,18 @@
+# python
+__pycache__/
+*.pyc
+.venv/
+.env
+model/artifacts/
+
+# node
+node_modules/
+npm-debug.log*
+
+# angular
+frontend/angular/dist/
+frontend/angular/.angular/
+
+# misc
+.DS_Store
+logs/*.csv
