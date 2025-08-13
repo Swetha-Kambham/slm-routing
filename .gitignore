@@ -13,6 +13,9 @@ npm-debug.log*
 frontend/angular/dist/
 frontend/angular/.angular/
 
+#data
+data/responses.json
+
 # misc
 .DS_Store
 logs/*.csv
