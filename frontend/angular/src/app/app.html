@@ -1,0 +1,18 @@
+<div class="container">
+  <h1>{{ title }}</h1>
+
+  <div class="card">
+    <label>Enter a request:</label>
+    <input [(ngModel)]="text" placeholder="e.g., book a table for two at 7pm" />
+    <button (click)="route()" [disabled]="loading">
+      {{ loading ? 'Routing...' : 'Route' }}
+    </button>
+  </div>
+
+  <div class="card" *ngIf="result">
+    <h3>Result</h3>
+    <pre>{{ result | json }}</pre>
+  </div>
+</div>
+
+
