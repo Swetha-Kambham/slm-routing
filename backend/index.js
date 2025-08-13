@@ -44,10 +44,10 @@ app.post("/route", async (req, res) => {
       return res.status(400).json({ error: "missing text" });
     }
     // ask the model for intent + score
-    const { data } = await axios.post(`${MODEL_URL}/predict`, { text });
-    const { intent, score, response } = data;
+    const { data } = await axios.post(`${MODEL_URL}/predict?top_k=3`, { text });
+    const { intent, score, response, top_k } = data;
     const agent = resolveAgent(intent, score);
-    return res.json({ intent, score, agent, message: response });
+    return res.json({ intent, score, top_k, agent, message: response });
   } catch (err) {
     console.error("route error:", err.message || err);
     return res.status(500).json({ error: "routing_failed" });
