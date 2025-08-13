@@ -1,18 +1,41 @@
 <div class="container">
   <h1>{{ title }}</h1>
 
+  <div class="card" *ngIf="config">
+    <div><b>Model URL:</b> {{ config.model_url }}</div>
+    <div><b>Threshold:</b> {{ config.threshold }}</div>
+    <div><b>Labels:</b> {{ config.labels.join(', ') }}</div>
+    <div>
+      <button (click)="ping()">Ping backend</button>
+      <span [style.color]="backendHealthy ? 'green' : 'crimson'">
+        • {{ backendHealthy ? 'healthy' : 'unreachable' }}
+      </span>
+    </div>
+  </div>
+
   <div class="card">
     <label>Enter a request:</label>
     <input [(ngModel)]="text" placeholder="e.g., book a table for two at 7pm" />
-    <button (click)="route()" [disabled]="loading">
-      {{ loading ? 'Routing...' : 'Route' }}
-    </button>
+    <button (click)="route()" [disabled]="loading">{{ loading ? 'Routing...' : 'Route' }}</button>
   </div>
 
   <div class="card" *ngIf="result">
     <h3>Result</h3>
-    <pre>{{ result | json }}</pre>
+    <div><b>Intent:</b> {{ result.intent }} ({{ result.score | number:'1.2-2' }})</div>
+    <div *ngIf="result.latency_ms !== undefined"><b>Latency:</b> {{ result.latency_ms }} ms</div>
+
+    <div *ngIf="result.top_k?.length">
+      <b>Top-k:</b>
+      <ul>
+        <li *ngFor="let t of result.top_k">
+          {{ t.intent }} — {{ t.score | number:'1.2-2' }}
+        </li>
+      </ul>
+    </div>
+
+    <details>
+      <summary>Raw response</summary>
+      <pre>{{ result | json }}</pre>
+    </details>
   </div>
 </div>
-
-
