@@ -1,4 +1,3 @@
-// src/app/app.ts
 import { Component, OnInit } from '@angular/core';
 import { NgIf, NgFor, JsonPipe, DecimalPipe } from '@angular/common'; // 👈 add DecimalPipe
 import { FormsModule } from '@angular/forms';

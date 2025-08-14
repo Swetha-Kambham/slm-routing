@@ -1,4 +1,3 @@
-// backend/index.js
 // Routing API: calls the model server, applies thresholds/agent mapping, and exposes metrics.
 
 const express = require("express");
@@ -13,16 +12,12 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
 
-// Env/config
+
 const MODEL_URL = process.env.MODEL_URL || "http://127.0.0.1:8000";
 const THRESHOLD = Number(process.env.THRESHOLD || 0.6);
 const PORT = process.env.PORT || 3001;
 
-// Optional static intent → agent mapping
-const AGENTS = {
-  // "BookRestaurant": { name: "ReservationsAgent", endpoint: "/agents/reservations" },
-  // "GetWeather":     { name: "WeatherAgent",     endpoint: "/agents/weather" },
-};
+const AGENTS = {};
 
 function resolveAgent(intent, score) {
   if (Number.isFinite(score) && score < THRESHOLD) {
@@ -31,13 +26,13 @@ function resolveAgent(intent, score) {
   return AGENTS[intent] || { name: `${intent}Agent`, endpoint: "/agents/generic" };
 }
 
-// ----------------- Metrics (for dashboard) -----------------
+//Metrics (for dashboard)
 let startedAt = Date.now();
 let total = 0;
 let fallback = 0;
-const latencies = [];               // keep last N latencies
-const intents = Object.create(null); // histogram of predicted intents
-const recent = [];                  // ring buffer of last N routed events
+const latencies = [];               
+const intents = Object.create(null); 
+const recent = [];                  
 const MAX_LAT = 500;
 const MAX_RECENT = 100;
 
@@ -49,7 +44,7 @@ const pct = (arr, p) => {
   const i = Math.max(0, Math.min(Math.ceil((p / 100) * a.length) - 1, a.length - 1));
   return a[i];
 };
-// -----------------------------------------------------------
+
 
 // Health
 app.get("/healthz", (_req, res) => res.json({ ok: true, model: MODEL_URL, threshold: THRESHOLD }));
@@ -79,7 +74,7 @@ app.post("/route", async (req, res) => {
 
     const agent = resolveAgent(intent, score);
 
-    // ---- metrics update ----
+    // metrics update
     const ms = Date.now() - t0;
     total += 1;
     intents[intent] = (intents[intent] || 0) + 1;
@@ -90,7 +85,6 @@ app.post("/route", async (req, res) => {
       { ts: new Date().toISOString(), text: String(text).slice(0, 160), intent, score, top_k, agent, ms },
       MAX_RECENT
     );
-    // ------------------------
 
     return res.json({ intent, score, top_k, agent, message: response, latency_ms: ms });
   } catch (err) {
@@ -99,14 +93,14 @@ app.post("/route", async (req, res) => {
   }
 });
 
-// Simulated agent endpoint (optional)
+// Simulated agent endpoint
 app.post("/agents/:name", async (req, res) => {
   const ms = 200 + Math.floor(Math.random() * 600);
   await new Promise((r) => setTimeout(r, ms));
   res.json({ agent: req.params.name, processedInMs: ms, status: "ok" });
 });
 
-// Rich metrics for the dashboard
+// dashboard metrics
 app.get("/metrics", (_req, res) => {
   res.json({
     service: "slm-backend",
@@ -117,8 +111,8 @@ app.get("/metrics", (_req, res) => {
     avg_latency_ms: +avg(latencies).toFixed(2),
     p50_latency_ms: pct(latencies, 50),
     p95_latency_ms: pct(latencies, 95),
-    intents,   // { intent: count }
-    recent,    // last N routed events (for debugging or dashboard table)
+    intents, 
+    recent,
   });
 });
 

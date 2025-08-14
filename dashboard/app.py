@@ -1,6 +1,3 @@
-# dashboard/app.py
-# Dash dashboard for SLM routing metrics (works with Plotly/Dash >= 3.x)
-
 import os
 import time
 import threading
@@ -9,13 +6,13 @@ from dash import Dash, html, dcc
 from dash.dependencies import Input, Output
 import plotly.graph_objects as go
 
-# ====== Config ======
+#Config
 BACKEND = os.getenv("BACKEND_URL", "http://127.0.0.1:3001")
 METRICS_URL = f"{BACKEND}/metrics"
 CONFIG_URL  = f"{BACKEND}/config"
 POLL_SEC    = float(os.getenv("POLL_SEC", "2"))
 
-# ====== Simple cache updated by a background thread ======
+# Simple cache updated by a background thread
 cache = {"metrics": {}, "config": {}}
 
 def poll():
@@ -58,7 +55,7 @@ app.layout = html.Div(
     style={"maxWidth":"1100px","margin":"24px auto","fontFamily":"system-ui, Arial"}
 )
 
-# ====== Callbacks ======
+#Callbacks
 @app.callback(Output("config","children"), Input("tick","n_intervals"))
 def show_cfg(_):
     c = cache.get("config") or {}
@@ -107,7 +104,7 @@ def kpis(_):
         gauge={"axis": {"range": [0, 100]}},
         domain={"row": 1, "column": 1}
     ))
-    # leave row 1, col 2 empty
+
 
     fig.update_layout(
         grid={"rows": 2, "columns": 3, "pattern": "independent"},
