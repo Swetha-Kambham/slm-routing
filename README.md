@@ -157,7 +157,7 @@ ng serve
 
 Type a request, click **Route**, and view predicted **intent**, **score**, **top-k**, and **latency**.
 
-### 5) Start the Dashboard (optional but recommended)
+### 5) Start the Dashboard
 
 ```bash
 # reuse the model venv
@@ -328,7 +328,7 @@ frontend/angular/dist/
 
 ---
 
-## End-to-End Run (recap)
+## End-to-End Run
 
 Open 4 terminals:
 
